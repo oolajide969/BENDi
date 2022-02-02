@@ -25,8 +25,8 @@ def calculate_angle(a, b, c):
 
 bodyAngles = {}
 # For webcam input:
-cap = cv2.VideoCapture(0)
-# cap = cv2.VideoCapture("1.mp4")
+# cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture("1.mp4")
 # For Video input:
 prevTime = 0
 with mp_pose.Pose(
@@ -121,7 +121,7 @@ with mp_pose.Pose(
             bodyAngles = dict(zip(angleStrings, angles))
             pprint(bodyAngles, width=1)
         except:
-            print("i don come")
+            print("Halt!")
             pass
 
         # landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value] gives coordinate
