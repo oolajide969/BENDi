@@ -13,7 +13,6 @@ import sys
 def start_the_game():
     screen = pygame.display.get_surface()
 
-
     mp_drawing = mp.solutions.drawing_utils
     mp_pose = mp.solutions.pose
     mp_holistic = mp.solutions.holistic
@@ -60,13 +59,12 @@ def start_the_game():
             min_detection_confidence=0.5,
             min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
+            success, frame = cap.read()
             events = pygame.event.get()
             for event in events:
                 if event.type == QUIT or event.type == KEYDOWN:
                     sys.exit(0)
 
-
-            success, frame = cap.read()
             if not success:
                 print("Ignoring empty camera frame.")
 
@@ -157,7 +155,7 @@ def start_the_game():
                 for pointStrings in bodyPoints:
                     if (bodyPoints[pointStrings]) >= 0.6:
                         print(f"{pointStrings}:{bodyPoints[pointStrings]} is in frame")
-                    elif (bodyPoints[pointStrings]) >= 0.35 and (bodyPoints[pointStrings]) < 0.6:
+                    elif 0.35 <= (bodyPoints[pointStrings]) < 0.6:
                         print(f"{pointStrings}:{bodyPoints[pointStrings]} might be skewed or covered")
                     else:
                         print(f"{pointStrings}:{bodyPoints[pointStrings]} is not well placed in frame")
@@ -177,12 +175,12 @@ def start_the_game():
                 rightAnkleAngle = calculate_angle(right_foot_index, right_knee, right_hip)
 
                 angles = [leftWristAngle, leftElbowAngle, leftShoulderAngle, leftHipAngle, leftKneeAngle, leftAnkleAngle,
-                      rightWristAngle, rightElbowAngle, rightShoulderAngle, rightHipAngle, rightKneeAngle,
-                      rightAnkleAngle]
+                          rightWristAngle, rightElbowAngle, rightShoulderAngle, rightHipAngle, rightKneeAngle,
+                          rightAnkleAngle]
 
                 angleStrings = ["leftWristAngle", "leftElbowAngle", "leftShoulderAngle", "leftHipAngle", "leftKneeAngle",
-                            "leftAnkleAngle", "rightWristAngle", "rightElbowAngle", "rightShoulderAngle",
-                            "rightHipAngle", "rightKneeAngle", "rightAnkleAngle"]
+                                "leftAnkleAngle", "rightWristAngle", "rightElbowAngle", "rightShoulderAngle",
+                                "rightHipAngle", "rightKneeAngle", "rightAnkleAngle"]
 
                 bodyAngles = dict(zip(angleStrings, angles))
 
@@ -203,7 +201,6 @@ def start_the_game():
             pg_img = pygame.image.frombuffer(img.tobytes(), img.size, img.mode)
             screen.blit(pg_img, (0, 0))
             pygame.display.flip()
-
             if cv2.waitKey(10) & 0xFF == ord('q'):
                 break
 
@@ -237,15 +234,15 @@ def start_the_game():
         print("common! this is not it")
 
 
+if __name__ == "__main__":
+    pygame.init()
+    window = pygame.display.set_mode((640,480))
+    pygame.display.set_caption("Bendi")
 
-pygame.init()
-window = pygame.display.set_mode((640,480))
-pygame.display.set_caption("WebCAM Demo")
 
+    menu = pygame_menu.Menu('Welcome', 400, 300,
+                           theme=pygame_menu.themes.THEME_BLUE)
+    menu.add.button('Play', start_the_game)
+    menu.add.button('Quit', pygame_menu.events.EXIT)
 
-menu = pygame_menu.Menu('Welcome', 400, 300,
-                       theme=pygame_menu.themes.THEME_BLUE)
-menu.add.button('Play', start_the_game)
-menu.add.button('Quit', pygame_menu.events.EXIT)
-
-menu.mainloop(window)
+    menu.mainloop(window)
