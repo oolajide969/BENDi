@@ -28,7 +28,7 @@ def detectPose(images, pose, display=True):
             # Extract landmarks
             point = results.pose_landmarks.landmark
         except:
-            print("Halt!")
+            print("Halted!")
             pass
 
         # Return the output image and the found landmarks.
