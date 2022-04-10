@@ -10,6 +10,9 @@ from PIL import Image
 import pygame_menu
 import sys
 
+
+CameraSize = {"width": 1440, "height":960}
+
 def start_the_game():
     screen = pygame.display.get_surface()
 
@@ -73,6 +76,10 @@ def start_the_game():
 
             # Recoloring image from BGR image to RGB.
             image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            height, width, channels = image.shape
+            if(width != CameraSize["width"] or height != CameraSize["height"]):
+                image = cv2.resize(image, (CameraSize["width"], CameraSize["height"]))
+
             # To improve performance, optionally mark the image as not writeable to
             # pass by reference.
             image.flags.writeable = False
@@ -236,13 +243,23 @@ def start_the_game():
 
 if __name__ == "__main__":
     pygame.init()
-    window = pygame.display.set_mode((640,480))
+
+    myimage = pygame_menu.baseimage.BaseImage(
+        image_path="background.jpg",
+        drawing_mode=pygame_menu.baseimage.IMAGE_MODE_REPEAT_XY
+    )
+    mytheme = pygame_menu.themes.THEME_ORANGE.copy()
+    mytheme.title_background_color = (0, 0, 0)
+
+    mytheme.background_color = myimage
+
+    window = pygame.display.set_mode((CameraSize["width"], CameraSize["height"]))
     pygame.display.set_caption("Bendi")
 
 
-    menu = pygame_menu.Menu('Welcome', 400, 300,
-                           theme=pygame_menu.themes.THEME_BLUE)
-    menu.add.button('Play', start_the_game)
+    menu = pygame_menu.Menu('Bendi', CameraSize["width"], CameraSize["height"],
+                           theme=mytheme)
+    menu.add.button('Start', start_the_game)
     menu.add.button('Quit', pygame_menu.events.EXIT)
 
     menu.mainloop(window)
